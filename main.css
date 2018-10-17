@@ -1,0 +1,159 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Google Sans'
+}
+header {
+  padding: 16px;
+  background: #FFEDAA;
+  margin-bottom: 12px;
+}
+header > * {
+  display: inline-flex;
+}
+.new-note {
+  float: right;
+}
+.note-box {
+  display: block;
+  margin: 0 16px 16px;
+  padding: 16px;
+  background: #84CEB2;
+  border-radius: 4px;
+}
+
+.note-box p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: justify;
+}
+
+.popup {
+  position: absolute;
+  background: #333C;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  z-index: 1;
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+.popup-body {
+  width: calc(100% - 32px);
+  margin: 16px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 4px;
+  position: relative;
+}
+
+hr {
+  margin: 16px 0;
+}
+
+input[type=text],
+textarea {
+  padding: 16px;
+  margin: 0;
+  display: block;
+  border: 1px solid #84CEB2;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.input-group {
+  margin: 8px 0 24px;
+}
+
+button {
+  background: #6AD9AE;
+  border: none;
+  border-radius: 4px;
+  padding: 16px 24px;
+  display: block;
+  width: calc(50% - 10px);
+  display: inline-block;
+}
+
+button:first-of-type {
+  margin-right: 16px;
+}
+
+.danger {
+  background: #FF6767;
+}
+
+.pallete {
+  display: inline-block;
+  margin: 8px;
+}
+
+.pallete input[type="radio"] {
+  display: none;
+}
+.pallete input[type="radio"]:checked + label:before {
+  content: url('check.svg');
+  position: absolute;
+}
+
+.pallete label {
+  height: 32px;
+  width: 32px;
+  display: inline-block;
+}
+
+.pallete:first-of-type {
+  margin-left: 0;
+}
+
+.delete {
+  width: 36px;
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  padding: 4px;
+
+}
+@media screen and (max-width: 600px) {
+  .note-box {
+    width: calc(100% - 32px);
+  }
+}
+@media only screen and (min-width: 500px) and (max-width: 799px){
+  .note-box {
+    display: inline-block;
+    width: calc(50% - 24px);
+  }
+
+  .note-box:nth-child(even) {
+    margin-right: 0;
+
+  }
+
+  .popup-body {
+    width: 420px;
+    margin: 24px auto;
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  .note-box {
+    display: inline-block;
+    width: calc(33.333% - 22px);
+  }
+
+  .note-box:nth-child(3n) {
+    margin: 0;
+  }
+
+  .popup-body {
+    width: 420px;
+    margin: 24px auto;
+  }
+}

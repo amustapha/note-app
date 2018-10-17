@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Simple note taking app</title>
+    <link rel="stylesheet" type="text/css" href="main.css?v=1.1" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Google+Sans:100,300,400,500,700,900,100i,300i,400i,500i,700i,900i" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="vue-app">
+      <header>
+        <h2>Note taking app</h2>
+        <img src="pencil.svg" class="new-note" @click="editing=true" />
+      </header>
+
+      <div class="note-box" v-for="note in notes" :style="`background: ${note.doc.background}`" @click="editing=true; currentNote=note.doc">
+        <h4>{{ note.doc.title }}</h4>
+        <p>{{ note.doc.body }}</p>
+      </div>
+
+      <div class="popup" :class="{visible: editing}">
+        <div class="popup-body">
+          <h3>Create/Edit Note</h3>
+          <img src="delete.svg" class="delete" v-if="currentNote._id" @click="remove()"/>
+          <hr/>
+          <form>
+            <div class="input-group">
+              <label for="title">Note title</label>
+              <input type="text" id="title" name="title" v-model="currentNote.title" />
+            </div>
+            <div class="input-group">
+              <label for="body">Note</label>
+              <textarea id="body" rows="10" v-model="currentNote.body"></textarea>
+            </div>
+            <div class="color-picker">
+              <div class="pallete" v-for="(pallete, index) in colorPallettes">
+                <input type="radio" :value="pallete" :id=`pallete-${index}` v-model="currentNote.background">
+                <label :for="`pallete-${index}`" :style="`background: ${pallete}`"></label>
+              </div>
+            </div>
+            <button type="button" class="danger" @click="editing=false">Cancel</button>
+            <button type="button" @click="update()" v-if="currentNote._id">Update</button>
+            <button type="button" @click="save()" v-else>Save</button>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js"></script>
+    <script>
+      new Vue({
+        data: {
+          currentNote: {},
+          editing: false,
+          db: new PouchDB('notes'),
+          notes: {},
+          colorPallettes: ['#96ceb4', ' #ffeead', ' #ff6f69', ' #ffcc5c', '#a8e6cf', '#dcedc1', '#ffd3b6'] 
+        },
+        el: '#vue-app',
+        methods: {
+          load () {
+            var context = this;
+            this.db.allDocs({include_docs: true},function (err, result){
+              if (err) {
+                return window.alert('Error occured fetching notes')
+              }
+              context.notes = result.rows
+            })
+          },
+          save () {
+            var context = this;
+            this.db.post(this.currentNote, function (err, result) {
+              if (err) {
+                return window.alert('Error encountered adding note')
+              }
+              context.editing = false;
+              context.currentNote = {}
+              context.load()
+            });
+          },
+          update () {
+            var context = this;
+            this.db.put(this.currentNote, function (err, result) {
+              if (err) {
+                return window.alert('Error encountered adding note')
+              }
+              context.editing = false;
+              context.currentNote = {}
+              context.load()
+            });
+          },
+          remove () {
+            var context = this;
+            if (window.confirm('Are you sure you want to delete note?')) {
+              this.db.remove(this.currentNote, function(err, result) {
+                if (err) {
+                  console.log(err)
+                  return window.alert('Document delete failed')
+                }
+                context.editing = false;
+                context.currentNote = {};
+                context.load();
+              });
+            }
+          }
+        },
+        mounted() {
+          this.load()
+        }
+      })
+    </script>    
+  </body>
+</html>
